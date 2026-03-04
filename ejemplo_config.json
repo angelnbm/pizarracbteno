@@ -1,0 +1,76 @@
+{
+  "novedades": [
+    "Cambio de turno confirmado (08:00)",
+    "Bomba B-2 regresó de mantenimiento",
+    "Pase de lista de personal completado"
+  ],
+  "notas": "Verificar nivel de combustible del generador. Calendario de entrenamiento actualizado para mañana.",
+  "comandante": {
+    "name": "Sr. Manuel Cespedes Mezas",
+    "rank": "Comandante"
+  },
+  "unidad": "B-1",
+  "maquinistas": "73 - 505 - 74",
+  "cuartelNombre": "Cuartel 0-8",
+  "cuartelEstado": "Operativo",
+  "units": [
+    {
+      "name": "B-1",
+      "status": "En servicio"
+    },
+    {
+      "name": "BX-1",
+      "status": "En espera"
+    },
+    {
+      "name": "BT-1",
+      "status": "En espera"
+    },
+    {
+      "name": "B-2",
+      "status": "En servicio"
+    },
+    {
+      "name": "R-2",
+      "status": "En servicio"
+    },
+    {
+      "name": "B-3",
+      "status": "Activo"
+    },
+    {
+      "name": "B-4",
+      "status": "En espera"
+    },
+    {
+      "name": "B-5",
+      "status": "En servicio"
+    },
+    {
+      "name": "K-1",
+      "status": "En servicio"
+    },
+    {
+      "name": "J-0",
+      "status": "En espera"
+    }
+  ],
+  "contactos": [
+    {
+      "icon": "📞",
+      "label": "Emergencia Municipal",
+      "value": "09 8850050"
+    },
+    {
+      "icon": "📞",
+      "label": "Conaf",
+      "value": "712 233784"
+    },
+    {
+      "icon": "📞",
+      "label": "Teléfono Central",
+      "value": "+56 9 9923 2963"
+    }
+  ],
+  "password": "1234"
+}

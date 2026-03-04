@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Central de Alarmas – Bomberos Teno</title>
+  <style>
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0d1b2a;
+      --surface:   #162032;
+      --border:    #1e3a5f;
+      --accent:    #2563eb;
+      --gold:      #f59e0b;
+      --green:     #22c55e;
+      --yellow:    #eab308;
+      --red:       #ef4444;
+      --gray:      #6b7280;
+      --text:      #e2e8f0;
+      --text-dim:  #94a3b8;
+      --header-bg: #0a1628;
+      --radius:    10px;
+      font-size: 15px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ============================================================
+       HEADER
+    ============================================================ */
+    header {
+      background: var(--header-bg);
+      border-bottom: 2px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .header-logos {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-circle {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: #1e3a5f;
+      border: 2px solid var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+    
+    img { max-width: 75%; max-height: 75%; }
+
+    .header-title {
+      text-align: center;
+      flex: 1;
+    }
+
+    .header-title h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #fff;
+      text-shadow: 0 0 18px rgba(37, 99, 235, 0.7);
+    }
+
+    .header-title .institution {
+      font-size: 1rem;
+      color: var(--gold);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    /* Clock */
+    .clock-block {
+      text-align: right;
+      min-width: 160px;
+    }
+
+    #clock {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 2px;
+    }
+
+    #date-display {
+      font-size: 1rem;
+      color: var(--text-dim);
+      margin-top: 2px;
+      letter-spacing: 1px;
+    }
+
+    /* ============================================================
+       MAIN GRID
+    ============================================================ */
+    main {
+      flex: 1;
+      padding: 16px 20px;
+      display: grid;
+      grid-template-columns: 1fr 600px;
+      grid-template-rows: auto auto 1fr;
+      gap: 14px;
+    }
+
+    /* ============================================================
+       CARDS
+    ============================================================ */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+    }
+
+    .card-title {
+      font-size: 1.7rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+    }
+
+    /* ============================================================
+       NOVEDADES
+    ============================================================ */
+    #card-novedades {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    #novedades-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    #novedades-list li {
+      padding: 4px 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      border-bottom: 1px solid #1a2d44;
+      font-size: 1.2rem;
+    }
+
+    #novedades-list li:last-child { border-bottom: none; }
+
+    #novedades-list li::before {
+      content: '•';
+      color: var(--accent);
+      font-size: 1.2rem;
+      line-height: 1.4;
+      flex-shrink: 0;
+    }
+
+    /* ============================================================
+       NOTAS
+    ============================================================ */
+    #card-notas {
+      grid-column: 1;
+      grid-row: 2;
+    }
+
+    #notas-text {
+      font-size: 1.3rem;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+
+    /* ============================================================
+       UNIT STATUS
+    ============================================================ */
+    #card-unit-status {
+      grid-column: 1;
+      grid-row: 3;
+    }
+
+    .units-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 10px;
+    }
+
+    .unit-badge {
+      background: #0d1b2a;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+      position: relative;
+      transition: border-color 0.2s;
+    }
+
+    .unit-badge .unit-name {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .unit-badge .unit-status-label {
+      font-size: 1rem;
+      color: var(--text-dim);
+    }
+
+    .unit-badge .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+
+    .unit-badge[data-status="En servicio"]  { border-color: var(--green);  }
+    .unit-badge[data-status="En espera"]    { border-color: var(--gray);   }
+    .unit-badge[data-status="Activo"]       { border-color: var(--green);  }
+    .unit-badge[data-status="En mantención"]{ border-color: var(--yellow); }
+    .unit-badge[data-status="Fuera de servicio"] { border-color: var(--red); }
+
+    .status-dot[data-status="En servicio"]       { background: var(--green);  box-shadow: 0 0 6px var(--green); }
+    .status-dot[data-status="En espera"]         { background: var(--gray);   }
+    .status-dot[data-status="Activo"]            { background: var(--green);  box-shadow: 0 0 6px var(--green); }
+    .status-dot[data-status="En mantención"]     { background: var(--yellow); box-shadow: 0 0 6px var(--yellow); }
+    .status-dot[data-status="Fuera de servicio"] { background: var(--red);    box-shadow: 0 0 6px var(--red); }
+
+    /* ============================================================
+       RIGHT COLUMN CARDS
+    ============================================================ */
+    .right-col {
+      grid-column: 2;
+      grid-row: 1 / 4;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* COMANDANTE */
+    .comandante-inner {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: #1e3a5f;
+      border: 2px solid var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+
+    .comandante-info .label { font-size: 1rem; color: var(--text-dim); }
+    .comandante-info .name  { font-size: 1.5rem; font-weight: 700; color: #fff; margin-top: 2px; }
+    .comandante-info .rank  { font-size: 1rem; color: var(--gold); margin-top: 1px; }
+
+    /* UNIDAD DE TURNO */
+    #card-unidad {
+      text-align: center;
+      padding: 18px;
+    }
+
+    #unidad-display {
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: 4px;
+      line-height: 1;
+      text-shadow: 0 0 24px rgba(37, 99, 235, 0.8);
+    }
+
+    .unit-icon { font-size: 2rem; margin-top: 6px; }
+
+    /* CONTACTOS */
+    #card-contactos .contact-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 4px 0;
+      border-bottom: 1px solid #1a2d44;
+      font-size: 1.3rem;
+    }
+
+    #card-contactos .contact-row:last-child { border-bottom: none; }
+    #card-contactos .contact-row .ci { font-size: 1rem; flex-shrink: 0; }
+    #card-contactos .contact-row .cn { color: var(--text-dim); font-size: 1rem; }
+    #card-contactos .contact-row .cv { color: #fff; font-weight: 600; }
+
+    /* CUARTEL / MAQUINISTAS */
+    .bottom-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .bottom-pair .card { padding: 10px 14px; }
+
+    #cuartel-estado {
+      font-size: 1.7rem;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    #cuartel-estado.Operativo  { color: var(--green); }
+    #cuartel-estado.Alarma { color: var(--yellow); }
+    #cuartel-estado.FueraDeServicio { color: var(--red); }
+
+    #maquinistas-info {
+      font-size: 1.7rem;
+      color: var(--text-dim);
+      line-height: 1.6;
+      margin-top: 4px;
+    }
+
+    /* ============================================================
+       ADMIN BUTTON (floating)
+    ============================================================ */
+    #btn-admin {
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      background: var(--accent);
+      border: none;
+      border-radius: 50%;
+      width: 46px;
+      height: 46px;
+      font-size: 1.3rem;
+      cursor: pointer;
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    #btn-admin:hover { background: #1d4ed8; transform: scale(1.08); }
+
+    /* ============================================================
+       MODAL OVERLAY
+    ============================================================ */
+    #modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      z-index: 200;
+      overflow-y: auto;
+      padding: 24px;
+    }
+
+    #modal-overlay.open { display: flex; align-items: flex-start; justify-content: center; }
+
+    #modal {
+      background: #12202f;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px 32px;
+      width: 100%;
+      max-width: 780px;
+      color: var(--text);
+      position: relative;
+    }
+
+    #modal h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+    }
+
+    .form-section {
+      margin-bottom: 22px;
+    }
+
+    .form-section h3 {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+
+    .form-field label {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .form-field input,
+    .form-field textarea,
+    .form-field select {
+      background: #0d1b2a;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      padding: 7px 10px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-field input:focus,
+    .form-field textarea:focus,
+    .form-field select:focus {
+      border-color: var(--accent);
+    }
+
+    .form-field textarea { resize: vertical; min-height: 70px; }
+
+    /* Units editor */
+    #units-editor { display: flex; flex-direction: column; gap: 8px; }
+
+    .unit-row {
+      display: grid;
+      grid-template-columns: 100px 1fr auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .unit-row select {
+      background: #0d1b2a;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      padding: 6px 8px;
+      font-size: 0.85rem;
+      font-family: inherit;
+      outline: none;
+    }
+
+    .unit-row input {
+      background: #0d1b2a;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      padding: 6px 8px;
+      font-size: 0.85rem;
+      font-family: inherit;
+      outline: none;
+    }
+
+    .btn-remove {
+      background: transparent;
+      border: 1px solid var(--red);
+      color: var(--red);
+      border-radius: 6px;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    .btn-remove:hover { background: #3b0a0a; }
+
+    #btn-add-unit {
+      background: transparent;
+      border: 1px dashed var(--accent);
+      color: var(--accent);
+      border-radius: 6px;
+      padding: 7px 0;
+      cursor: pointer;
+      font-size: 0.85rem;
+      width: 100%;
+      margin-top: 4px;
+    }
+
+    #btn-add-unit:hover { background: #0a1f3a; }
+
+    /* Novedades editor */
+    #novedades-editor { display: flex; flex-direction: column; gap: 6px; }
+
+    .novedad-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .novedad-row input {
+      background: #0d1b2a;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      padding: 6px 10px;
+      font-size: 0.88rem;
+      font-family: inherit;
+      outline: none;
+      width: 100%;
+    }
+
+    #btn-add-novedad {
+      background: transparent;
+      border: 1px dashed var(--accent);
+      color: var(--accent);
+      border-radius: 6px;
+      padding: 7px 0;
+      cursor: pointer;
+      font-size: 0.85rem;
+      width: 100%;
+      margin-top: 4px;
+    }
+
+    #btn-add-novedad:hover { background: #0a1f3a; }
+
+    /* Contactos editor */
+    #contactos-editor { display: flex; flex-direction: column; gap: 8px; }
+
+    .contacto-row {
+      display: grid;
+      grid-template-columns: 32px 1fr 1fr auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .contacto-row input {
+      background: #0d1b2a;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      padding: 6px 8px;
+      font-size: 0.85rem;
+      font-family: inherit;
+      outline: none;
+    }
+
+    #btn-add-contacto {
+      background: transparent;
+      border: 1px dashed var(--accent);
+      color: var(--accent);
+      border-radius: 6px;
+      padding: 7px 0;
+      cursor: pointer;
+      font-size: 0.85rem;
+      width: 100%;
+      margin-top: 4px;
+    }
+
+    #btn-add-contacto:hover { background: #0a1f3a; }
+
+    /* Exportar/Importar buttons */
+    .export-import-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .btn-export, .btn-import {
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      border-radius: 6px;
+      padding: 9px 16px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+
+    .btn-export:hover, .btn-import:hover { background: #0a1f3a; }
+
+    /* Modal buttons */
+    .modal-footer {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 24px;
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+    }
+
+    .btn-save {
+      background: var(--accent);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      padding: 9px 24px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-save:hover { background: #1d4ed8; }
+
+    .btn-cancel {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-dim);
+      padding: 9px 24px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .btn-cancel:hover { border-color: #fff; color: #fff; }
+
+    #btn-close-modal {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      background: transparent;
+      border: none;
+      color: var(--text-dim);
+      font-size: 1.4rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    #btn-close-modal:hover { color: #fff; }
+
+    /* Password screen */
+    #pwd-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 0 20px;
+    }
+
+    #pwd-screen p { color: var(--text-dim); font-size: 0.9rem; }
+
+    #pwd-input {
+      background: #0d1b2a;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 9px 14px;
+      font-size: 1rem;
+      font-family: inherit;
+      outline: none;
+      width: 200px;
+      text-align: center;
+      letter-spacing: 4px;
+    }
+
+    #pwd-input:focus { border-color: var(--accent); }
+
+    #pwd-error { color: var(--red); font-size: 0.82rem; display: none; }
+
+    .btn-pwd {
+      background: var(--accent);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      padding: 9px 28px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* TOAST */
+    #toast {
+      position: fixed;
+      bottom: 74px;
+      right: 18px;
+      background: var(--green);
+      color: #052e16;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 9px 18px;
+      border-radius: 8px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 300;
+    }
+
+    #toast.show { opacity: 1; }
+
+    /* ============================================================
+       SCROLLBAR
+    ============================================================ */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* ============================================================
+       RESPONSIVE TV hints
+    ============================================================ */
+    @media (max-width: 900px) {
+      main { grid-template-columns: 1fr; }
+      .right-col { grid-column: 1; grid-row: auto; }
+      .header-title h1 { font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ============================================================
+     HEADER
+============================================================ -->
+<header>
+  <div class="header-logos">
+    <div class="logo-circle"> <img src="logocb.png" alt=""> </div>
+  </div>
+
+  <div class="header-title">
+    <h1>Central de Alarmas</h1>
+    <div class="institution">Cuerpo de Bomberos de Teno</div>
+  </div>
+
+  <div class="clock-block">
+    <div id="clock">00:00:00</div>
+    <div id="date-display">—</div>
+  </div>
+</header>
+
+<!-- ============================================================
+     MAIN GRID
+============================================================ -->
+<main>
+
+  <!-- NOVEDADES -->
+  <div class="card" id="card-novedades">
+    <div class="card-title">Novedades</div>
+    <ul id="novedades-list"></ul>
+  </div>
+
+  <!-- NOTAS -->
+  <div class="card" id="card-notas">
+    <div class="card-title">Notas</div>
+    <p id="notas-text"></p>
+  </div>
+
+  <!-- UNIT STATUS -->
+  <div class="card" id="card-unit-status">
+    <div class="card-title">Estado de Unidades</div>
+    <div class="units-grid" id="units-grid"></div>
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div class="right-col">
+
+    <!-- COMANDANTE -->
+    <div class="card" id="card-comandante">
+      <div class="card-title">Comandante de Turno</div>
+      <div class="comandante-inner">
+        <div class="avatar">👨‍🚒</div>
+        <div class="comandante-info">
+          <div class="label">Comandante</div>
+          <div class="name" id="cmd-name">—</div>
+          <div class="rank" id="cmd-rank">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- UNIDAD DE TURNO -->
+    <div class="card" id="card-unidad">
+      <div class="card-title">Unidad de Turno</div>
+      <div id="unidad-display">—</div>
+      <div class="unit-icon"></div>
+    </div>
+
+    <!-- CONTACTOS -->
+    <div class="card" id="card-contactos">
+      <div class="card-title">Contactos de Emergencia</div>
+      <div id="contacts-list"></div>
+    </div>
+
+    <!-- CUARTEL + MAQUINISTAS -->
+    <div class="bottom-pair">
+      <div class="card">
+        <div class="card-title">Cuartel</div>
+        <div id="cuartel-nombre" style="font-size:0.8rem;color:var(--text-dim)"></div>
+        <div id="cuartel-estado" class="Operativo">Operativo</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Maquinistas</div>
+        <div id="maquinistas-info"></div>
+      </div>
+    </div>
+
+  </div><!-- /right-col -->
+
+</main>
+
+<!-- ============================================================
+     ADMIN BUTTON
+============================================================ -->
+<button id="btn-admin" title="Panel de administración">⚙️</button>
+
+<!-- ============================================================
+     TOAST
+============================================================ -->
+<div id="toast">✓ Cambios guardados</div>
+
+<!-- ============================================================
+     MODAL
+============================================================ -->
+<div id="modal-overlay">
+  <div id="modal">
+    <button id="btn-close-modal">✕</button>
+
+    <!-- PASSWORD SCREEN -->
+    <div id="pwd-screen">
+      <h2>🔒 Acceso de Administrador</h2>
+      <p>Ingresa la contraseña para editar la pizarra</p>
+      <input type="password" id="pwd-input" placeholder="••••" maxlength="20" />
+      <span id="pwd-error">Contraseña incorrecta</span>
+      <button class="btn-pwd" id="btn-pwd-ok">Ingresar</button>
+    </div>
+
+    <!-- EDIT FORM (hidden until auth) -->
+    <div id="edit-form" style="display:none">
+      <h2>✏️ Editar Pizarra</h2>
+
+      <!-- Novedades -->
+      <div class="form-section">
+        <h3>Novedades</h3>
+        <div id="novedades-editor"></div>
+        <button id="btn-add-novedad">+ Agregar novedad</button>
+      </div>
+
+      <!-- Notas -->
+      <div class="form-section">
+        <h3>Notas</h3>
+        <div class="form-field">
+          <label>Contenido de notas</label>
+          <textarea id="f-notas" rows="3"></textarea>
+        </div>
+      </div>
+
+      <!-- Comandante + Unidad -->
+      <div class="form-section">
+        <h3>Turno</h3>
+        <div class="form-row">
+          <div class="form-field">
+            <label>Nombre del comandante</label>
+            <input type="text" id="f-cmd-name" />
+          </div>
+          <div class="form-field">
+            <label>Grado / Cargo</label>
+            <input type="text" id="f-cmd-rank" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label>Unidad de turno</label>
+            <input type="text" id="f-unidad" placeholder="B-1" />
+          </div>
+          <div class="form-field">
+            <label>Maquinistas</label>
+            <input type="text" id="f-maquinistas" placeholder="F3 / S03-74" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Cuartel -->
+      <div class="form-section">
+        <h3>Cuartel</h3>
+        <div class="form-row">
+          <div class="form-field">
+            <label>Identificador (ej: Cuartel 0-8)</label>
+            <input type="text" id="f-cuartel-nombre" />
+          </div>
+          <div class="form-field">
+            <label>Estado</label>
+            <select id="f-cuartel-estado">
+              <option value="Operativo">Operativo</option>
+              <option value="FueraDeServicio">Fuera de servicio</option>
+              <option value="Alarma">Alarma</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Unidades -->
+      <div class="form-section">
+        <h3>État de Unidades</h3>
+        <div id="units-editor"></div>
+        <button id="btn-add-unit">+ Agregar unidad</button>
+      </div>
+
+      <!-- Contactos -->
+      <div class="form-section">
+        <h3>Contactos de Emergencia</h3>
+        <div id="contactos-editor"></div>
+        <button id="btn-add-contacto">+ Agregar contacto</button>
+      </div>
+
+      <!-- Exportar/Importar -->
+      <div class="form-section">
+        <h3>Exportar / Importar configuración</h3>
+        <p style="font-size: 0.8rem; color: var(--text-dim); margin-bottom: 10px; line-height: 1.5;">
+          Exporta la configuración a un archivo JSON para respaldo o edición manual. Importa desde un archivo JSON para restaurar una configuración guardada.
+        </p>
+        <div class="export-import-row">
+          <button type="button" class="btn-export" id="btn-export">📥 Exportar JSON</button>
+          <button type="button" class="btn-import" id="btn-import">📤 Importar JSON</button>
+          <input type="file" id="file-import" accept=".json" style="display: none;" />
+        </div>
+      </div>
+
+      <!-- Contraseña -->
+      <div class="form-section">
+        <h3>Cambiar contraseña</h3>
+        <div class="form-row">
+          <div class="form-field">
+            <label>Nueva contraseña (dejar vacío para no cambiar)</label>
+            <input type="password" id="f-new-pwd" autocomplete="new-password" />
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancel" id="btn-form-cancel">Cancelar</button>
+        <button class="btn-save" id="btn-form-save">Guardar cambios</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================================
+     SCRIPT
+============================================================ -->
+<script>
+  /* --------------------------------------------------------
+     DEFAULT DATA
+  -------------------------------------------------------- */
+  const DEFAULTS = {
+    novedades: [
+      "Cambio de turno confirmado (08:00)",
+      "Bomba B-2 regresó de mantenimiento",
+      "Pase de lista de personal completado"
+    ],
+    notas: "Verificar nivel de combustible del generador. Calendario de entrenamiento actualizado para mañana.",
+    comandante: { name: "Sr. Manuel Cespedes Mezas", rank: "Comandante" },
+    unidad: "B-1",
+    maquinistas: "F3 / Indicativo de Llamada S03-74",
+    cuartelNombre: "Cuartel 0-8",
+    cuartelEstado: "Operativo",
+    units: [
+      { name: "B-1",  status: "En servicio" },
+      { name: "BX-1", status: "En espera"   },
+      { name: "R-2",  status: "En espera"   },
+      { name: "BT-1", status: "En espera"   },
+      { name: "B-3",  status: "En servicio" },
+      { name: "J-O",  status: "Activo"      },
+      { name: "J-4",  status: "En espera"   },
+      { name: "K-1",  status: "En servicio" },
+      { name: "B-2",  status: "En servicio" },
+      { name: "B-5",  status: "En espera"   }
+    ],
+    contactos: [
+      { icon: "📞", label: "Emergencia Municipal", value: "09 8850050" },
+      { icon: "📞", label: "Coñari",               value: "712 233784" },
+      { icon: "📞", label: "Teléfono Central",      value: "+56 9 9923 2963" }
+    ],
+    password: "1234"
+  };
+
+  const STATUS_OPTIONS = ["En servicio", "En espera", "Activo", "En mantención", "Fuera de servicio"];
+
+  /* --------------------------------------------------------
+     STATE
+  -------------------------------------------------------- */
+  let state = loadState();
+
+  function loadState() {
+    try {
+      const saved = localStorage.getItem('pizarra_state');
+      if (saved) return JSON.parse(saved);
+    } catch(e) {}
+    return JSON.parse(JSON.stringify(DEFAULTS));
+  }
+
+  function saveState() {
+    localStorage.setItem('pizarra_state', JSON.stringify(state));
+  }
+
+  /* --------------------------------------------------------
+     CLOCK
+  -------------------------------------------------------- */
+  function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const s = String(now.getSeconds()).padStart(2,'0');
+    document.getElementById('clock').textContent = `${h}:${m}:${s}`;
+
+    const days   = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+    const months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    document.getElementById('date-display').textContent =
+      `${days[now.getDay()]}, ${now.getDate()} de ${months[now.getMonth()]} ${now.getFullYear()}`;
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+
+  /* --------------------------------------------------------
+     RENDER
+  -------------------------------------------------------- */
+  function render() {
+    // Novedades
+    const ul = document.getElementById('novedades-list');
+    ul.innerHTML = '';
+    state.novedades.forEach(n => {
+      const li = document.createElement('li');
+      li.textContent = n;
+      ul.appendChild(li);
+    });
+
+    // Notas
+    document.getElementById('notas-text').textContent = state.notas;
+
+    // Comandante
+    document.getElementById('cmd-name').textContent = state.comandante.name;
+    document.getElementById('cmd-rank').textContent = state.comandante.rank;
+
+    // Unidad de turno
+    document.getElementById('unidad-display').textContent = state.unidad;
+
+    // Maquinistas
+    document.getElementById('maquinistas-info').textContent = state.maquinistas;
+
+    // Cuartel
+    document.getElementById('cuartel-nombre').textContent = state.cuartelNombre;
+    const ce = document.getElementById('cuartel-estado');
+    ce.className = state.cuartelEstado;
+    ce.textContent = state.cuartelEstado === 'Operativo' ? 'ESTADO Operativo' :
+                     state.cuartelEstado === 'Alarma' ? 'ALERTA' : 'Fuera de servicio';
+
+    // Units grid
+    const grid = document.getElementById('units-grid');
+    grid.innerHTML = '';
+    state.units.forEach(u => {
+      const badge = document.createElement('div');
+      badge.className = 'unit-badge';
+      badge.setAttribute('data-status', u.status);
+      badge.innerHTML = `
+        <span class="unit-name">${escHtml(u.name)}</span>
+        <span class="unit-status-label">${escHtml(u.status)}</span>
+        <span class="status-dot" data-status="${escHtml(u.status)}"></span>
+      `;
+      grid.appendChild(badge);
+    });
+
+    // Contacts
+    const cl = document.getElementById('contacts-list');
+    cl.innerHTML = '';
+    state.contactos.forEach(c => {
+      const row = document.createElement('div');
+      row.className = 'contact-row';
+      row.innerHTML = `
+        <span class="ci">${c.icon}</span>
+        <div>
+          <div class="cn">${escHtml(c.label)}</div>
+          <div class="cv">${escHtml(c.value)}</div>
+        </div>
+      `;
+      cl.appendChild(row);
+    });
+  }
+
+  function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  render();
+
+  /* --------------------------------------------------------
+     MODAL / AUTH
+  -------------------------------------------------------- */
+  const overlay   = document.getElementById('modal-overlay');
+  const pwdScreen = document.getElementById('pwd-screen');
+  const editForm  = document.getElementById('edit-form');
+  const pwdInput  = document.getElementById('pwd-input');
+  const pwdError  = document.getElementById('pwd-error');
+
+  document.getElementById('btn-admin').addEventListener('click', openModal);
+
+  function openModal() {
+    pwdScreen.style.display = 'flex';
+    editForm.style.display  = 'none';
+    pwdInput.value = '';
+    pwdError.style.display = 'none';
+    overlay.classList.add('open');
+    setTimeout(() => pwdInput.focus(), 100);
+  }
+
+  function closeModal() {
+    overlay.classList.remove('open');
+  }
+
+  document.getElementById('btn-close-modal').addEventListener('click', closeModal);
+  document.getElementById('btn-form-cancel').addEventListener('click', closeModal);
+
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) closeModal();
+  });
+
+  document.getElementById('btn-pwd-ok').addEventListener('click', checkPassword);
+  pwdInput.addEventListener('keydown', e => { if (e.key === 'Enter') checkPassword(); });
+
+  function checkPassword() {
+    if (pwdInput.value === state.password) {
+      pwdError.style.display = 'none';
+      pwdScreen.style.display = 'none';
+      populateForm();
+      editForm.style.display = 'block';
+    } else {
+      pwdError.style.display = 'block';
+      pwdInput.value = '';
+      pwdInput.focus();
+    }
+  }
+
+  /* --------------------------------------------------------
+     POPULATE FORM
+  -------------------------------------------------------- */
+  function populateForm() {
+    // Notas
+    document.getElementById('f-notas').value = state.notas;
+
+    // Turno
+    document.getElementById('f-cmd-name').value = state.comandante.name;
+    document.getElementById('f-cmd-rank').value = state.comandante.rank;
+    document.getElementById('f-unidad').value   = state.unidad;
+    document.getElementById('f-maquinistas').value = state.maquinistas;
+
+    // Cuartel
+    document.getElementById('f-cuartel-nombre').value = state.cuartelNombre;
+    document.getElementById('f-cuartel-estado').value = state.cuartelEstado;
+
+    // Password
+    document.getElementById('f-new-pwd').value = '';
+
+    // Novedades
+    buildNovedadesEditor();
+
+    // Units
+    buildUnitsEditor();
+
+    // Contactos
+    buildContactosEditor();
+  }
+
+  /* ---- Novedades editor ---- */
+  function buildNovedadesEditor() {
+    const container = document.getElementById('novedades-editor');
+    container.innerHTML = '';
+    state.novedades.forEach((n, i) => {
+      const row = document.createElement('div');
+      row.className = 'novedad-row';
+      row.innerHTML = `
+        <input type="text" value="${escHtml(n)}" data-idx="${i}" class="nov-input" />
+        <button class="btn-remove" data-idx="${i}">✕</button>
+      `;
+      container.appendChild(row);
+    });
+    container.querySelectorAll('.btn-remove').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const i = parseInt(btn.dataset.idx);
+        state.novedades.splice(i, 1);
+        buildNovedadesEditor();
+      });
+    });
+  }
+
+  document.getElementById('btn-add-novedad').addEventListener('click', () => {
+    state.novedades.push('Nueva novedad');
+    buildNovedadesEditor();
+  });
+
+  /* ---- Units editor ---- */
+  function buildUnitsEditor() {
+    const container = document.getElementById('units-editor');
+    container.innerHTML = '';
+    state.units.forEach((u, i) => {
+      const row = document.createElement('div');
+      row.className = 'unit-row';
+      row.innerHTML = `
+        <input type="text" value="${escHtml(u.name)}" placeholder="Nombre" data-idx="${i}" class="un-name" />
+        <select data-idx="${i}" class="un-status">
+          ${STATUS_OPTIONS.map(s => `<option value="${s}"${s===u.status?' selected':''}>${s}</option>`).join('')}
+        </select>
+        <button class="btn-remove" data-idx="${i}">✕</button>
+      `;
+      container.appendChild(row);
+    });
+    container.querySelectorAll('.btn-remove').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const i = parseInt(btn.dataset.idx);
+        state.units.splice(i, 1);
+        buildUnitsEditor();
+      });
+    });
+  }
+
+  document.getElementById('btn-add-unit').addEventListener('click', () => {
+    state.units.push({ name: 'Nueva', status: 'En espera' });
+    buildUnitsEditor();
+  });
+
+  /* ---- Contactos editor ---- */
+  function buildContactosEditor() {
+    const container = document.getElementById('contactos-editor');
+    container.innerHTML = '';
+    state.contactos.forEach((c, i) => {
+      const row = document.createElement('div');
+      row.className = 'contacto-row';
+      row.innerHTML = `
+        <input type="text" value="${escHtml(c.icon)}" placeholder="📞" data-idx="${i}" class="ct-icon" style="text-align:center;" />
+        <input type="text" value="${escHtml(c.label)}" placeholder="Nombre" data-idx="${i}" class="ct-label" />
+        <input type="text" value="${escHtml(c.value)}" placeholder="Número / dirección" data-idx="${i}" class="ct-value" />
+        <button class="btn-remove" data-idx="${i}">✕</button>
+      `;
+      container.appendChild(row);
+    });
+    container.querySelectorAll('.btn-remove').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const i = parseInt(btn.dataset.idx);
+        state.contactos.splice(i, 1);
+        buildContactosEditor();
+      });
+    });
+  }
+
+  document.getElementById('btn-add-contacto').addEventListener('click', () => {
+    state.contactos.push({ icon: '📞', label: 'Nuevo contacto', value: '' });
+    buildContactosEditor();
+  });
+
+  /* --------------------------------------------------------
+     SAVE
+  -------------------------------------------------------- */
+  document.getElementById('btn-form-save').addEventListener('click', () => {
+    // Novedades
+    const novInputs = document.querySelectorAll('.nov-input');
+    state.novedades = Array.from(novInputs).map(i => i.value.trim()).filter(Boolean);
+
+    // Notas
+    state.notas = document.getElementById('f-notas').value.trim();
+
+    // Turno
+    state.comandante.name = document.getElementById('f-cmd-name').value.trim();
+    state.comandante.rank = document.getElementById('f-cmd-rank').value.trim();
+    state.unidad          = document.getElementById('f-unidad').value.trim();
+    state.maquinistas     = document.getElementById('f-maquinistas').value.trim();
+
+    // Cuartel
+    state.cuartelNombre = document.getElementById('f-cuartel-nombre').value.trim();
+    state.cuartelEstado = document.getElementById('f-cuartel-estado').value;
+
+    // Units
+    const unNames    = document.querySelectorAll('.un-name');
+    const unStatuses = document.querySelectorAll('.un-status');
+    state.units = Array.from(unNames).map((inp, i) => ({
+      name:   inp.value.trim(),
+      status: unStatuses[i].value
+    })).filter(u => u.name);
+
+    // Contactos
+    const ctIcons  = document.querySelectorAll('.ct-icon');
+    const ctLabels = document.querySelectorAll('.ct-label');
+    const ctValues = document.querySelectorAll('.ct-value');
+    state.contactos = Array.from(ctIcons).map((inp, i) => ({
+      icon:  inp.value.trim() || '📞',
+      label: ctLabels[i].value.trim(),
+      value: ctValues[i].value.trim()
+    })).filter(c => c.label);
+
+    // Password
+    const newPwd = document.getElementById('f-new-pwd').value;
+    if (newPwd.trim()) state.password = newPwd.trim();
+
+    saveState();
+    render();
+    closeModal();
+    showToast();
+  });
+
+  /* --------------------------------------------------------
+     TOAST
+  -------------------------------------------------------- */
+  function showToast(message = '✓ Cambios guardados') {
+    const t = document.getElementById('toast');
+    t.textContent = message;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  /* --------------------------------------------------------
+     EXPORTAR / IMPORTAR JSON
+  -------------------------------------------------------- */
+  document.getElementById('btn-export').addEventListener('click', () => {
+    const dataStr = JSON.stringify(state, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'pizarra_config.json';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    showToast('📥 Configuración exportada');
+  });
+
+  document.getElementById('btn-import').addEventListener('click', () => {
+    document.getElementById('file-import').click();
+  });
+
+  document.getElementById('file-import').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const imported = JSON.parse(event.target.result);
+        
+        // Validar que tenga las propiedades básicas
+        if (!imported.novedades || !imported.comandante || !imported.units) {
+          alert('❌ El archivo JSON no tiene el formato correcto');
+          return;
+        }
+
+        // Actualizar el estado
+        state = imported;
+        saveState();
+        render();
+        populateForm();
+        showToast('📤 Configuración importada');
+      } catch (err) {
+        alert('❌ Error al leer el archivo JSON: ' + err.message);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = ''; // Reset input
+  });
+</script>
+</body>
+</html>
