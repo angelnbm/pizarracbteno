@@ -8,9 +8,11 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:        #0d1b2a;
-      --surface:   #162032;
-      --border:    #1e3a5f;
+      --bg:        #0c131d;
+      --surface:   #1a2430;
+      --surface-2: #141c26;
+      --border:    #2a3b4f;
+      --border-soft: #1f2b3a;
       --accent:    #2563eb;
       --gold:      #f59e0b;
       --green:     #22c55e;
@@ -18,14 +20,14 @@
       --red:       #ef4444;
       --gray:      #6b7280;
       --text:      #e2e8f0;
-      --text-dim:  #94a3b8;
-      --header-bg: #0a1628;
-      --radius:    10px;
-      font-size: 15px;
+      --text-dim:  #b7c3d6;
+      --header-bg: #0b141f;
+      --radius:    8px;
+      font-size: clamp(14px, 1.2vw, 18px);
     }
 
     body {
-      background: var(--bg);
+      background: radial-gradient(120% 140% at 50% 0%, #151e2a 0%, #0c131d 60%, #0a111a 100%);
       color: var(--text);
       font-family: 'Segoe UI', system-ui, sans-serif;
       min-height: 100vh;
@@ -35,24 +37,28 @@
 
     /* HEADER */
     header {
-      background: var(--header-bg);
+      background: linear-gradient(180deg, #0f1926 0%, #0b141f 100%);
       border-bottom: 2px solid var(--border);
-      padding: 12px 24px;
+      box-shadow: inset 0 -1px 0 rgba(255,255,255,0.05), 0 8px 18px rgba(0,0,0,0.35);
+      padding: clamp(8px, 1.2vw, 14px) clamp(12px, 2vw, 24px);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
+      gap: clamp(8px, 1.4vw, 16px);
+      flex-wrap: wrap;
     }
 
-    .header-logos { display: flex; align-items: center; gap: 12px; }
+    .header-logos { display: flex; align-items: center; gap: 10px; }
 
     .logo-circle {
-      width: 64px; height: 64px;
+      width: clamp(40px, 6vw, 64px);
+      height: clamp(40px, 6vw, 64px);
       border-radius: 50%;
       background: #1e3a5f;
       border: 2px solid var(--gold);
       display: flex; align-items: center; justify-content: center;
-      font-size: 28px; flex-shrink: 0;
+      font-size: clamp(18px, 3vw, 30px);
+      flex-shrink: 0;
     }
 
     img { max-width: 75%; max-height: 75%; }
@@ -60,148 +66,189 @@
     .header-title { text-align: center; flex: 1; }
 
     .header-title h1 {
-      font-size: 3rem; font-weight: 800;
-      letter-spacing: 3px; text-transform: uppercase;
-      color: #fff; text-shadow: 0 0 18px rgba(37,99,235,0.7);
+      font-size: clamp(1.2rem, 3.2vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: clamp(0.5px, 0.25vw, 2px);
+      text-transform: uppercase;
+      color: #f4f7fb;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.6), 0 0 16px rgba(255,255,255,0.15);
+      line-height: 1.1;
     }
 
     .header-title .institution {
-      font-size: 1rem; color: var(--gold);
-      letter-spacing: 2px; text-transform: uppercase; margin-top: 2px;
+      font-size: clamp(0.7rem, 1.4vw, 0.95rem);
+      color: var(--gold);
+      letter-spacing: clamp(0.8px, 0.25vw, 1.5px);
+      text-transform: uppercase;
+      margin-top: 2px;
     }
 
-    .clock-block { text-align: right; min-width: 160px; }
+    .clock-block { text-align: right; min-width: clamp(110px, 14vw, 160px); }
 
     #clock {
-      font-size: 2.5rem; font-weight: 700; color: var(--text);
-      font-variant-numeric: tabular-nums; letter-spacing: 2px;
+      font-size: clamp(1.1rem, 2.8vw, 2rem);
+      font-weight: 700; color: var(--text);
+      font-variant-numeric: tabular-nums; letter-spacing: clamp(0.5px, 0.25vw, 1.5px);
     }
 
-    #date-display { font-size: 1rem; color: var(--text-dim); margin-top: 2px; letter-spacing: 1px; }
+    #date-display {
+      font-size: clamp(0.7rem, 1.4vw, 0.9rem);
+      color: var(--text-dim);
+      margin-top: 2px;
+      letter-spacing: clamp(0.3px, 0.2vw, 0.6px);
+    }
 
     /* MAIN GRID */
     main {
       flex: 1;
-      padding: 16px 20px;
+      padding: clamp(10px, 1.6vw, 18px) clamp(12px, 2vw, 24px) clamp(12px, 2vw, 20px);
       display: grid;
-      grid-template-columns: 1fr 600px;
-      grid-template-rows: auto auto auto 1fr;
-      gap: 14px;
+      grid-template-columns: repeat(6, 1fr);
+      grid-auto-rows: auto;
+      gap: clamp(10px, 1.4vw, 16px);
+      grid-template-areas:
+        "novedades notas cuartel comandante unidad contactos"
+        "unidades unidades unidades oficiales oficiales maquinistas";
     }
 
     /* CARDS */
     .card {
-      background: var(--surface);
+      background: linear-gradient(180deg, var(--surface) 0%, var(--surface-2) 100%);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 14px 18px;
+      padding: clamp(8px, 1.2vw, 16px) clamp(10px, 1.6vw, 18px);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        inset 0 -1px 0 rgba(0,0,0,0.35),
+        0 8px 16px rgba(0,0,0,0.25);
     }
 
     .card-title {
-      font-size: 1.7rem; font-weight: 700;
-      letter-spacing: 2px; text-transform: uppercase;
-      color: var(--gold); margin-bottom: 10px;
-      border-bottom: 1px solid var(--border); padding-bottom: 6px;
+      font-size: clamp(1rem, 1.6vw, 1.45rem);
+      font-weight: 800;
+      letter-spacing: clamp(0.8px, 0.2vw, 2px);
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: clamp(6px, 1vw, 10px);
+      border-bottom: 1px solid var(--border-soft);
+      padding-bottom: clamp(4px, 0.8vw, 8px);
+      text-shadow: 0 1px 0 rgba(0,0,0,0.6);
     }
 
     /* NOVEDADES */
-    #card-novedades { grid-column: 1; grid-row: 1; }
+    #card-novedades { 
+      grid-area: novedades;
+    }
 
     #novedades-list { list-style: none; padding: 0; }
 
     #novedades-list li {
       padding: 4px 0; display: flex; align-items: flex-start;
-      gap: 8px; border-bottom: 1px solid #1a2d44; font-size: 1.2rem;
+      gap: clamp(6px, 1vw, 10px);
+      border-bottom: 1px solid #1f2b3a;
+      font-size: clamp(0.9rem, 1.2vw, 1.1rem);
     }
 
     #novedades-list li:last-child { border-bottom: none; }
 
     #novedades-list li::before {
       content: '•'; color: var(--accent);
-      font-size: 1.2rem; line-height: 1.4; flex-shrink: 0;
+      font-size: clamp(0.85rem, 1.1vw, 1rem);
+      line-height: 1.3; flex-shrink: 0;
     }
 
     /* NOTAS */
-    #card-notas { grid-column: 1; grid-row: 2; }
+    #card-notas { 
+      grid-area: notas;
+    }
 
-    #notas-text { font-size: 1.3rem; color: var(--text-dim); line-height: 1.6; }
+    #notas-text {
+      font-size: clamp(1rem, 1.5vw, 1.3rem);
+      color: #f1f5f9;
+      line-height: 1.6;
+      font-weight: 600;
+    }
 
     /* OFICIALES */
-    #card-oficiales { grid-column: 1; grid-row: 3; }
+    #card-oficiales { 
+      grid-area: oficiales;
+    }
 
     .oficiales-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 10px;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(6px, 1vw, 10px);
+      width: 100%;
     }
-
+    
     .oficial-badge {
-      background: #0d1b2a;
-      border: 2px solid var(--border);
+      background: #0f1824;
+      border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 8px 10px;
+      padding: clamp(6px, 0.9vw, 10px) clamp(8px, 1.2vw, 12px);
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      gap: 2px;
+      gap: clamp(2px, 0.4vw, 4px);
       position: relative;
       transition: border-color 0.2s;
       cursor: pointer;
       user-select: none;
+      min-width: 0;
     }
 
     .oficial-badge:hover { filter: brightness(1.15); }
     .oficial-badge:active { transform: scale(0.97); }
 
     .oficial-badge .oficial-name {
-      font-size: 1rem;
-      font-weight: 700;
+      font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+      font-weight: 800;
       color: #fff;
-      padding-right: 18px;
-      line-height: 1.3;
+      padding-right: 16px;
+      line-height: 1.1;
+      word-break: break-word;
+      overflow-wrap: break-word;
     }
 
     .oficial-badge .oficial-status-label {
-      font-size: 0.9rem;
-      color: var(--text-dim);
+      font-size: clamp(0.75rem, 1vw, 0.95rem);
+      color: var(--text);
+      font-weight: 600;
     }
 
     .oficial-badge .status-dot {
-      width: 10px; height: 10px;
+      width: clamp(6px, 0.8vw, 9px);
+      height: clamp(6px, 0.8vw, 9px);
       border-radius: 50%;
       position: absolute;
-      top: 10px; right: 10px;
+      top: clamp(6px, 0.8vw, 8px);
+      right: clamp(6px, 0.8vw, 8px);
     }
 
     /* Colores por estado */
     .oficial-badge[data-status="Disponible"]       { border-color: var(--green);  }
     .oficial-badge[data-status="No disponible"]    { border-color: var(--red);    }
-    .oficial-badge[data-status="Licencia"]         { border-color: var(--yellow); }
-    .oficial-badge[data-status="Vacaciones"]       { border-color: var(--yellow); }
-    .oficial-badge[data-status="Comisión"]         { border-color: var(--accent); }
-
     .oficial-badge[data-status="Disponible"]    .status-dot { background: var(--green);  box-shadow: 0 0 6px var(--green);  }
     .oficial-badge[data-status="No disponible"] .status-dot { background: var(--red);    box-shadow: 0 0 6px var(--red);    }
-    .oficial-badge[data-status="Licencia"]      .status-dot { background: var(--yellow); box-shadow: 0 0 6px var(--yellow); }
-    .oficial-badge[data-status="Vacaciones"]    .status-dot { background: var(--yellow); box-shadow: 0 0 6px var(--yellow); }
-    .oficial-badge[data-status="Comisión"]      .status-dot { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
 
     /* UNIT STATUS */
-    #card-unit-status { grid-column: 1; grid-row: 4; }
+    #card-unit-status { 
+      grid-area: unidades;
+    }
 
     .units-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      gap: 10px;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: clamp(8px, 1.2vw, 12px);
     }
 
     .unit-badge {
-      background: #0d1b2a;
-      border: 2px solid var(--border);
+      background: #0f1824;
+      border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 8px 10px;
+      padding: clamp(8px, 1.2vw, 12px) clamp(10px, 1.6vw, 14px);
       display: flex; flex-direction: column;
-      align-items: flex-start; gap: 2px;
+      align-items: flex-start; gap: 3px;
       position: relative; transition: border-color 0.2s;
       cursor: pointer;
       user-select: none;
@@ -210,81 +257,141 @@
     .unit-badge:hover { filter: brightness(1.15); }
     .unit-badge:active { transform: scale(0.97); }
 
-    .unit-badge .unit-name  { font-size: 2rem; font-weight: 700; color: #fff; }
-    .unit-badge .unit-status-label { font-size: 1rem; color: var(--text-dim); }
+    .unit-badge .unit-name  { font-size: clamp(1.2rem, 2.4vw, 1.9rem); font-weight: 800; color: #fff; }
+    .unit-badge .unit-status-label { font-size: clamp(0.7rem, 1vw, 0.9rem); color: var(--text-dim); }
 
     .unit-badge .status-dot {
-      width: 10px; height: 10px; border-radius: 50%;
-      position: absolute; top: 10px; right: 10px;
+      width: clamp(6px, 0.8vw, 9px);
+      height: clamp(6px, 0.8vw, 9px);
+      border-radius: 50%;
+      position: absolute;
+      top: clamp(8px, 1vw, 12px);
+      right: clamp(8px, 1vw, 12px);
     }
 
-    .unit-badge[data-status="En servicio"]       { border-color: var(--green);  }
-    .unit-badge[data-status="En espera"]         { border-color: var(--gray);   }
     .unit-badge[data-status="Activo"]            { border-color: var(--green);  }
     .unit-badge[data-status="En mantención"]     { border-color: var(--yellow); }
     .unit-badge[data-status="Fuera de servicio"] { border-color: var(--red);    }
 
-    .unit-badge[data-status="En servicio"]       .status-dot { background: var(--green);  box-shadow: 0 0 6px var(--green);  }
-    .unit-badge[data-status="En espera"]         .status-dot { background: var(--gray);   }
     .unit-badge[data-status="Activo"]            .status-dot { background: var(--green);  box-shadow: 0 0 6px var(--green);  }
     .unit-badge[data-status="En mantención"]     .status-dot { background: var(--yellow); box-shadow: 0 0 6px var(--yellow); }
     .unit-badge[data-status="Fuera de servicio"] .status-dot { background: var(--red);    box-shadow: 0 0 6px var(--red);    }
 
-    /* RIGHT COLUMN */
-    .right-col {
-      grid-column: 2;
-      grid-row: 1 / 5;
-      display: flex; flex-direction: column; gap: 14px;
+    /* COMANDANTES */
+    #card-comandante { 
+      grid-area: comandante;
     }
 
-    .comandante-inner { display: flex; align-items: center; gap: 14px; }
-
-    .avatar {
-      width: 64px; height: 64px; border-radius: 50%;
-      background: #1e3a5f; border: 2px solid var(--gold);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 28px; flex-shrink: 0;
+    .comandantes-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: clamp(8px, 1.2vw, 14px);
+      width: 100%;
     }
 
-    .comandante-info .label { font-size: 1rem; color: var(--text-dim); }
-    .comandante-info .name  { font-size: 1.5rem; font-weight: 700; color: #fff; margin-top: 2px; }
-    .comandante-info .rank  { font-size: 1rem; color: var(--gold); margin-top: 1px; }
+    .comandante-badge {
+      background: #0f1824;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: clamp(10px, 1.4vw, 16px) clamp(12px, 1.8vw, 18px);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: clamp(3px, 0.6vw, 6px);
+      position: relative;
+      transition: border-color 0.2s;
+      cursor: pointer;
+      user-select: none;
+      min-width: 0;
+      min-height: clamp(64px, 10vw, 92px);
+      justify-content: center;
+    }
 
-    #card-unidad { text-align: center; padding: 18px; }
+    .comandante-badge:hover { filter: brightness(1.15); }
+    .comandante-badge:active { transform: scale(0.97); }
+
+    .comandante-badge .cmd-name {
+      font-size: clamp(1.1rem, 1.9vw, 1.5rem);
+      font-weight: 800;
+      color: #fff;
+      padding-right: 16px;
+      line-height: 1.1;
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .comandante-badge .cmd-rank {
+      font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .comandante-badge .status-dot {
+      width: clamp(6px, 0.8vw, 9px);
+      height: clamp(6px, 0.8vw, 9px);
+      border-radius: 50%;
+      position: absolute;
+      top: clamp(6px, 0.8vw, 8px);
+      right: clamp(6px, 0.8vw, 8px);
+    }
+
+    /* Colores por estado de comandante */
+    .comandante-badge[data-status="Disponible"]       { border-color: var(--green);  }
+    .comandante-badge[data-status="No disponible"]    { border-color: var(--red);    }
+    .comandante-badge[data-status="Disponible"]    .status-dot { background: var(--green);  box-shadow: 0 0 6px var(--green);  }
+    .comandante-badge[data-status="No disponible"] .status-dot { background: var(--red);    box-shadow: 0 0 6px var(--red);    }
+
+    #card-unidad { text-align: center; padding: clamp(10px, 1.6vw, 18px); }
 
     #unidad-display {
-      font-size: 3.5rem; font-weight: 900; color: #fff;
-      letter-spacing: 4px; line-height: 1;
+      font-size: clamp(2rem, 5vw, 3.6rem);
+      font-weight: 900; color: #fff;
+      letter-spacing: clamp(1px, 0.6vw, 3px);
+      line-height: 1;
       text-shadow: 0 0 24px rgba(37,99,235,0.8);
     }
 
-    .unit-icon { font-size: 2rem; margin-top: 6px; }
+    .unit-icon { font-size: clamp(1rem, 2vw, 1.6rem); margin-top: clamp(4px, 0.8vw, 8px); }
 
     #card-contactos .contact-row {
       display: flex; align-items: flex-start; gap: 8px;
-      padding: 4px 0; border-bottom: 1px solid #1a2d44; font-size: 1.3rem;
+      padding: 3px 0; border-bottom: 1px solid #1f2b3a;
+      font-size: clamp(0.9rem, 1.1vw, 1.1rem);
     }
 
     #card-contactos .contact-row:last-child { border-bottom: none; }
-    #card-contactos .contact-row .ci { font-size: 1rem; flex-shrink: 0; }
-    #card-contactos .contact-row .cn { color: var(--text-dim); font-size: 1rem; }
-    #card-contactos .contact-row .cv { color: #fff; font-weight: 600; }
+    #card-contactos .contact-row .ci { font-size: clamp(0.9rem, 1.1vw, 1.1rem); flex-shrink: 0; }
+    #card-contactos .contact-row .cn { color: var(--text-dim); font-size: clamp(0.8rem, 1vw, 1rem); font-weight: 500; }
+    #card-contactos .contact-row .cv { color: #fff; font-weight: 700; font-size: clamp(0.9rem, 1.1vw, 1.05rem); }
 
-    .bottom-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .bottom-pair .card { padding: 10px 14px; }
-
-    #cuartel-estado { font-size: 1.7rem; font-weight: 700; margin-top: 4px; }
+    #cuartel-estado { font-size: clamp(1.2rem, 2.2vw, 1.7rem); font-weight: 800; margin-top: 4px; }
     #cuartel-estado.Operativo       { color: var(--green);  }
     #cuartel-estado.Alarma          { color: var(--yellow); }
     #cuartel-estado.FueraDeServicio { color: var(--red);    }
 
-    #maquinistas-info { font-size: 1.7rem; color: var(--text-dim); line-height: 1.6; margin-top: 4px; }
+    #cuartel-nombre { font-size: clamp(0.85rem, 1.2vw, 1.05rem); color: var(--text); font-weight: 500; }
+
+    #maquinistas-info { font-size: clamp(0.95rem, 1.4vw, 1.2rem); color: var(--text); line-height: 1.5; margin-top: 4px; font-weight: 500; }
+
+    /* Card positioning overrides - removed for responsive layout */
+    #card-comandante, #card-unidad, #card-contactos, #card-cuartel, #card-maquinistas {
+      width: 100%;
+    }
+    
+    .right-col {
+      display: contents;
+    }
+
+    #card-cuartel { }
+    #card-maquinistas { }
 
     /* ADMIN BUTTON */
     #btn-admin {
       position: fixed; bottom: 18px; right: 18px;
       background: var(--accent); border: none; border-radius: 50%;
-      width: 46px; height: 46px; font-size: 1.3rem;
+      width: clamp(40px, 5vw, 48px);
+      height: clamp(40px, 5vw, 48px);
+      font-size: clamp(1.1rem, 2vw, 1.3rem);
       cursor: pointer; color: #fff;
       box-shadow: 0 4px 16px rgba(0,0,0,0.5); z-index: 100;
       display: flex; align-items: center; justify-content: center;
@@ -537,11 +644,123 @@
     ::-webkit-scrollbar-track { background: var(--bg); }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-    /* RESPONSIVE */
-    @media (max-width: 900px) {
-      main { grid-template-columns: 1fr; }
-      .right-col { grid-column: 1; grid-row: auto; }
-      .header-title h1 { font-size: 1.3rem; }
+    /* RESPONSIVE - Adaptive layout for different screen sizes */
+    
+    /* Ultra-wide screens (4K+) */
+    @media (min-width: 1920px) {
+      :root { font-size: 16px; }
+      main { 
+        grid-template-columns: repeat(6, 1fr); 
+        gap: 20px; 
+        padding: 20px 24px;
+        grid-template-areas:
+          "novedades notas cuartel comandante unidad contactos"
+          "unidades unidades unidades oficiales oficiales maquinistas";
+      }
+      .card { padding: 14px 18px; }
+      .card-title { font-size: 1.45rem; margin-bottom: 12px; }
+      header { padding: 12px 24px; gap: 16px; }
+      .logo-circle { width: 64px; height: 64px; font-size: 28px; }
+      .header-title h1 { font-size: 2.5rem; letter-spacing: 2.5px; }
+    }
+
+    /* Standard large screens (1366px - 1919px) */
+    @media (min-width: 1366px) and (max-width: 1919px) {
+      :root { font-size: 15px; }
+      main { 
+        grid-template-columns: repeat(6, 1fr); 
+        gap: 16px;
+        grid-template-areas:
+          "novedades notas cuartel comandante unidad contactos"
+          "unidades unidades unidades oficiales oficiales maquinistas";
+      }
+      .card { padding: 12px 16px; }
+      .card-title { font-size: 1.35rem; margin-bottom: 10px; }
+    }
+
+    /* Tablet landscape (1024px - 1365px) */
+    @media (min-width: 1024px) and (max-width: 1365px) {
+      :root { font-size: 14px; }
+      main { 
+        grid-template-columns: repeat(5, 1fr); 
+        gap: 14px; 
+        padding: 12px 14px;
+        grid-template-areas:
+          "novedades notas cuartel comandante unidad"
+          "unidades unidades unidades contactos maquinistas"
+          "unidades unidades unidades oficiales oficiales";
+      }
+      .card { padding: 10px 12px; }
+      .card-title { font-size: 1.1rem; margin-bottom: 8px; }
+      .header-title h1 { font-size: 1.8rem; }
+      #clock { font-size: 1.7rem; }
+      .logo-circle { width: 48px; height: 48px; font-size: 20px; }
+    }
+
+    /* Tablet portrait (768px - 1023px) */
+    @media (min-width: 768px) and (max-width: 1023px) {
+      :root { font-size: 13px; }
+      main { 
+        grid-template-columns: repeat(4, 1fr); 
+        gap: 12px; 
+        padding: 10px 12px;
+        grid-template-areas:
+          "novedades notas cuartel comandante"
+          "unidades unidades unidades unidades"
+          "unidad contactos oficiales oficiales";
+      }
+      .card { padding: 8px 10px; }
+      .card-title { font-size: 0.95rem; margin-bottom: 6px; }
+      .header-title h1 { font-size: 1.5rem; }
+      #clock { font-size: 1.4rem; }
+      .logo-circle { width: 44px; height: 44px; font-size: 18px; }
+    }
+
+    /* Small phone landscape (480px - 767px) */
+    @media (min-width: 480px) and (max-width: 767px) {
+      :root { font-size: 12px; }
+      main { 
+        grid-template-columns: repeat(3, 1fr); 
+        gap: 10px; 
+        padding: 8px 10px;
+        grid-template-areas:
+          "novedades notas cuartel"
+          "unidades unidades unidades"
+          "comandante unidad contactos"
+          "oficiales oficiales maquinistas";
+      }
+      .card { padding: 6px 8px; }
+      .card-title { font-size: 1rem; margin-bottom: 4px; }
+      header { padding: 8px 12px; gap: 10px; }
+      .header-title h1 { font-size: 1.5rem; letter-spacing: 1px; }
+      #clock { font-size: 1.1rem; }
+      .logo-circle { width: 40px; height: 40px; font-size: 20px; }
+    }
+
+    /* Mobile phone (< 480px) */
+    @media (max-width: 479px) {
+      :root { font-size: 20px; }
+      main { 
+        grid-template-columns: 1fr; 
+        gap: 8px; 
+        padding: 8px;
+        grid-template-areas:
+          "novedades"
+          "notas"
+          "cuartel"
+          "unidades"
+          "comandante"
+          "unidad"
+          "contactos"
+          "oficiales"
+          "maquinistas";
+      }
+      .card { padding: 6px 8px; }
+      .card-title { font-size: 0.75rem; margin-bottom: 4px; }
+      header { padding: 6px 8px; gap: 8px; flex-wrap: wrap; }
+      .header-title h1 { font-size: 1rem; letter-spacing: 0.5px; }
+      #clock { font-size: 0.9rem; }
+      .logo-circle { width: 36px; height: 36px; font-size: 14px; }
     }
   </style>
 </head>
@@ -592,14 +811,7 @@
 
     <div class="card" id="card-comandante">
       <div class="card-title">Comandante de Turno</div>
-      <div class="comandante-inner">
-        <div class="avatar">👨‍🚒</div>
-        <div class="comandante-info">
-          <div class="label">Comandante</div>
-          <div class="name" id="cmd-name">—</div>
-          <div class="rank" id="cmd-rank">—</div>
-        </div>
-      </div>
+      <div class="comandantes-grid" id="comandantes-grid"></div>
     </div>
 
     <div class="card" id="card-unidad">
@@ -613,16 +825,15 @@
       <div id="contacts-list"></div>
     </div>
 
-    <div class="bottom-pair">
-      <div class="card">
-        <div class="card-title">Cuartel</div>
-        <div id="cuartel-nombre" style="font-size:0.8rem;color:var(--text-dim)"></div>
-        <div id="cuartel-estado" class="Operativo">Operativo</div>
-      </div>
-      <div class="card">
-        <div class="card-title">Maquinistas</div>
-        <div id="maquinistas-info"></div>
-      </div>
+    <div class="card" id="card-cuartel">
+      <div class="card-title">Cuartel</div>
+      <div id="cuartel-nombre" style="font-size:1rem;color:var(--text-dim)"></div>
+      <div id="cuartel-estado" class="Operativo">Operativo</div>
+    </div>
+
+    <div class="card" id="card-maquinistas">
+      <div class="card-title">Maquinistas</div>
+      <div id="maquinistas-info"></div>
     </div>
 
   </div><!-- /right-col -->
@@ -662,17 +873,13 @@
       </div>
 
       <div class="form-section">
-        <h3>Turno</h3>
-        <div class="form-row">
-          <div class="form-field">
-            <label>Nombre del comandante</label>
-            <input type="text" id="f-cmd-name" />
-          </div>
-          <div class="form-field">
-            <label>Grado / Cargo</label>
-            <input type="text" id="f-cmd-rank" />
-          </div>
-        </div>
+        <h3>Comandantes de Turno</h3>
+        <div id="comandantes-editor"></div>
+        <button id="btn-add-comandante">＋ Agregar comandante</button>
+      </div>
+
+      <div class="form-section">
+        <h3>Unidad y Maquinistas</h3>
         <div class="form-row">
           <div class="form-field">
             <label>Unidad de turno</label>
@@ -723,7 +930,7 @@
 
       <div class="form-section">
         <h3>Exportar / Importar configuración</h3>
-        <p style="font-size:0.8rem;color:var(--text-dim);margin-bottom:10px;line-height:1.5;">
+        <p style="font-size:1rem;color:var(--text-dim);margin-bottom:10px;line-height:1.5;">
           Exporta la configuración a un archivo JSON para respaldo o edición manual.
         </p>
         <div class="export-import-row">
@@ -759,28 +966,31 @@
       "Pase de lista de personal completado"
     ],
     notas: "Verificar nivel de combustible del generador. Calendario de entrenamiento actualizado para mañana.",
-    comandante: { name: "Sr. Manuel Cespedes Mezas", rank: "Comandante" },
+    comandantes: [
+      { name: "Sr. Manuel Cespedes Mezas", rank: "1er Comandante", status: "Disponible" },
+      { name: "Sr. Sergio Silva Sepúlveda", rank: "2do Comandante", status: "No disponible" }
+    ],
     unidad: "B-1",
     maquinistas: "F3 / Indicativo de Llamada S03-74",
     cuartelNombre: "Cuartel 0-8",
     cuartelEstado: "Operativo",
     oficiales: [
-      { name: "Capitán Javier Gutierrez",  status: "Disponible"      },
-      { name: "Capitán Egon Defuntenberg", status: "Vacaciones"    },
-      { name: "Teniente Juan Cortes",   status: "No disponible" },
-      { name: "Teniente Mariela Flores", status: "Licencia"      }
+      { name: "Capitán Javier Gutierrez",  status: "Disponible"    },
+      { name: "Capitán Egon Defuntenberg", status: "No disponible" },
+      { name: "Teniente Juan Cortes",      status: "No disponible" },
+      { name: "Teniente Mariela Flores",   status: "Disponible"    }
     ],
     units: [
-      { name: "B-1",  status: "En servicio" },
-      { name: "BX-1", status: "En espera"   },
-      { name: "BT-1", status: "En espera"   },
-      { name: "B-2",  status: "En espera"   },
-      { name: "R-2",  status: "En servicio" },
-      { name: "B-3",  status: "Activo"      },
-      { name: "B-4",  status: "En espera"   },
-      { name: "B-5",  status: "En servicio" },
-      { name: "K-1",  status: "En servicio" },
-      { name: "J-0",  status: "En espera"   }
+      { name: "B-1",  status: "Activo" },
+      { name: "BX-1", status: "Activo" },
+      { name: "BT-1", status: "Activo" },
+      { name: "B-2",  status: "En mantención" },
+      { name: "R-2",  status: "Activo" },
+      { name: "B-3",  status: "Activo" },
+      { name: "B-4",  status: "Activo" },
+      { name: "B-5",  status: "Activo" },
+      { name: "K-1",  status: "Activo" },
+      { name: "J-0",  status: "Fuera de servicio" }
     ],
     contactos: [
       { icon: "📞", label: "Emergencia Municipal", value: "9-98850050"     },
@@ -790,8 +1000,8 @@
     password: "1234"
   };
 
-  const STATUS_OPTIONS  = ["En servicio", "En espera", "Activo", "En mantención", "Fuera de servicio"];
-  const OFICIAL_STATUS  = ["Disponible", "No disponible", "Licencia", "Vacaciones"];
+  const STATUS_OPTIONS  = ["Activo", "En mantención", "Fuera de servicio"];
+  const OFICIAL_STATUS  = ["Disponible", "No disponible"];
 
   let state = loadState();
 
@@ -805,6 +1015,26 @@
         Object.keys(defaults).forEach(key => {
           if (parsed[key] === undefined) parsed[key] = defaults[key];
         });
+        if (parsed.units) {
+          parsed.units = parsed.units.map(unit => ({
+            ...unit,
+            status: unit.status === 'En espera' || unit.status === 'En servicio'
+              ? 'Activo'
+              : unit.status
+          }));
+        }
+        if (parsed.oficiales) {
+          parsed.oficiales = parsed.oficiales.map(oficial => ({
+            ...oficial,
+            status: OFICIAL_STATUS.includes(oficial.status) ? oficial.status : 'No disponible'
+          }));
+        }
+        if (parsed.comandantes) {
+          parsed.comandantes = parsed.comandantes.map(cmd => ({
+            ...cmd,
+            status: OFICIAL_STATUS.includes(cmd.status) ? cmd.status : 'No disponible'
+          }));
+        }
         return parsed;
       }
     } catch(e) {}
@@ -844,9 +1074,26 @@
     // Notas
     document.getElementById('notas-text').textContent = state.notas;
 
-    // Comandante
-    document.getElementById('cmd-name').textContent = state.comandante.name;
-    document.getElementById('cmd-rank').textContent = state.comandante.rank;
+    // Comandantes
+    const cg = document.getElementById('comandantes-grid');
+    cg.innerHTML = '';
+    if (state.comandantes && state.comandantes.length > 0) {
+      state.comandantes.forEach((cmd, i) => {
+        const badge = document.createElement('div');
+        badge.className = 'comandante-badge';
+        badge.setAttribute('data-status', cmd.status);
+        badge.setAttribute('data-idx', i);
+        badge.innerHTML = `
+          <span class="cmd-name">${escHtml(cmd.name)}</span>
+          <span class="cmd-rank">${escHtml(cmd.rank)}</span>
+          <span class="status-dot"></span>
+        `;
+        badge.addEventListener('click', () => cycleComandanteStatus(i));
+        cg.appendChild(badge);
+      });
+    } else {
+      cg.innerHTML = '<div style="color:var(--text-dim);font-size:0.95rem;padding:4px 0;grid-column:1/-1;">Sin comandantes registrados</div>';
+    }
 
     // Unidad de turno
     document.getElementById('unidad-display').textContent = state.unidad;
@@ -964,8 +1211,6 @@
   /* POPULATE FORM */
   function populateForm() {
     document.getElementById('f-notas').value          = state.notas;
-    document.getElementById('f-cmd-name').value       = state.comandante.name;
-    document.getElementById('f-cmd-rank').value       = state.comandante.rank;
     document.getElementById('f-unidad').value         = state.unidad;
     document.getElementById('f-maquinistas').value    = state.maquinistas;
     document.getElementById('f-cuartel-nombre').value = state.cuartelNombre;
@@ -975,6 +1220,7 @@
     buildUnitsEditor();
     buildContactosEditor();
     buildOficialesEditor();
+    buildComandantesEditor();
   }
 
   /* Novedades editor */
@@ -1091,12 +1337,39 @@
     buildOficialesEditor();
   });
 
+  /* Comandantes editor */
+  function buildComandantesEditor() {
+    const container = document.getElementById('comandantes-editor');
+    container.innerHTML = '';
+    state.comandantes = state.comandantes || [];
+    state.comandantes.forEach((cmd, i) => {
+      const row = document.createElement('div');
+      row.className = 'oficial-row'; // reuse same styling
+      row.innerHTML = `
+        <input type="text" value="${escHtml(cmd.name)}" placeholder="Nombre del comandante" class="cmd-name-input" data-idx="${i}" />
+        <input type="text" value="${escHtml(cmd.rank)}" placeholder="Rango" class="cmd-rank-input" data-idx="${i}" />
+        <button class="btn-remove" data-idx="${i}">✕</button>
+      `;
+      container.appendChild(row);
+    });
+    container.querySelectorAll('.btn-remove').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.comandantes.splice(parseInt(btn.dataset.idx), 1);
+        buildComandantesEditor();
+      });
+    });
+  }
+
+  document.getElementById('btn-add-comandante').addEventListener('click', () => {
+    state.comandantes = state.comandantes || [];
+    state.comandantes.push({ name: 'Nuevo comandante', rank: 'Rango', status: 'Disponible' });
+    buildComandantesEditor();
+  });
+
   /* SAVE */
   document.getElementById('btn-form-save').addEventListener('click', () => {
     state.novedades = Array.from(document.querySelectorAll('.nov-input')).map(i => i.value.trim()).filter(Boolean);
     state.notas             = document.getElementById('f-notas').value.trim();
-    state.comandante.name   = document.getElementById('f-cmd-name').value.trim();
-    state.comandante.rank   = document.getElementById('f-cmd-rank').value.trim();
     state.unidad            = document.getElementById('f-unidad').value.trim();
     state.maquinistas       = document.getElementById('f-maquinistas').value.trim();
     state.cuartelNombre     = document.getElementById('f-cuartel-nombre').value.trim();
@@ -1120,6 +1393,12 @@
     state.oficiales = Array.from(ofNames).map((inp, i) => ({
       name: inp.value.trim(), status: ofStatuses[i].value
     })).filter(o => o.name);
+
+    const cmdNames = document.querySelectorAll('.cmd-name-input');
+    const cmdRanks = document.querySelectorAll('.cmd-rank-input');
+    state.comandantes = Array.from(cmdNames).map((inp, i) => ({
+      name: inp.value.trim(), rank: cmdRanks[i].value.trim(), status: state.comandantes[i]?.status || 'Disponible'
+    })).filter(cmd => cmd.name);
 
     const newPwd = document.getElementById('f-new-pwd').value;
     if (newPwd.trim()) state.password = newPwd.trim();
@@ -1160,7 +1439,7 @@
     reader.onload = (event) => {
       try {
         const imported = JSON.parse(event.target.result);
-        if (!imported.novedades || !imported.comandante || !imported.units) {
+        if (!imported.novedades || !imported.comandantes || !imported.units) {
           alert('❌ El archivo JSON no tiene el formato correcto'); return;
         }
         state = imported;
@@ -1186,6 +1465,14 @@
     const current = state.oficiales[idx].status;
     const i = OFICIAL_STATUS.indexOf(current);
     state.oficiales[idx].status = OFICIAL_STATUS[(i + 1) % OFICIAL_STATUS.length];
+    saveState();
+    render();
+  }
+
+  function cycleComandanteStatus(idx) {
+    const current = state.comandantes[idx].status;
+    const i = OFICIAL_STATUS.indexOf(current);
+    state.comandantes[idx].status = OFICIAL_STATUS[(i + 1) % OFICIAL_STATUS.length];
     saveState();
     render();
   }
